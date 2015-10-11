@@ -86,6 +86,10 @@ func (provider *DockerProvider) generateRouteRequests(event *docker.APIEvents) {
 	if container, err := provider.client.InspectContainer(event.ID); err == nil {
 		// Loop through the ports and request routes
 		for dockerPort, mapping := range container.NetworkSettings.Ports {
+			if dockerPort == "" || mapping == nil {
+				continue
+			}
+
 			port := strings.Split(string(dockerPort), "/")[0]
 			name := strings.Split(container.Name, "/")[1]
 
