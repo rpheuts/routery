@@ -11,6 +11,7 @@ Routery is aimed to be a convention-over-configuration dynamic reverse proxy for
  - Supports multiple Docker hosts as route providers
  - Allows for multiple frontends and hostnames
  - Supports multiple ports by appending the port name (if not 80) to the host
+ - SSL Termination support
 
 ## How-To
 
