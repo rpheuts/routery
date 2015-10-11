@@ -23,4 +23,8 @@ type DockerConfig struct {
 type FrontendConfig struct {
 	Hostname string
 	Port     int
+	SSL      bool
+	Cert     string
+	Key      string
+	CA       string
 }

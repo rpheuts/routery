@@ -7,13 +7,17 @@ frontend:
   -
     hostname: dev
     port: 8090
+    ssl: true
+    cert: /Users/rpheuts/.docker/machine/machines/default/cert.pem
+    key: /Users/rpheuts/.docker/machine/machines/default/key.pem
+    ca: /Users/rpheuts/.docker/machine/machines/default/ca.pem
   -
     hostname: dev
     port: 8080
 
 docker:
   -
-    ip: 192.168.99.100
+    ip: 192.168.99.101
     port: 2376
     ssl: true
     ca: /Users/rpheuts/.docker/machine/machines/default/ca.pem

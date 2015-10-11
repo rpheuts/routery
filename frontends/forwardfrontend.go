@@ -1,10 +1,13 @@
 package frontends
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"github.com/mailgun/oxy/forward"
 	"github.com/mailgun/oxy/testutils"
 	"github.com/rpheuts/routery/router"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -83,5 +86,45 @@ func (ff *ForwardFrontend) watchWebRequests() {
 		Addr:    fmt.Sprintf(":%v", ff.config.Port),
 		Handler: redirect,
 	}
-	s.ListenAndServe()
+
+	if ff.config.SSL {
+		if ff.config.CA != "" {
+			s.TLSConfig = ff.getCACert()
+		}
+
+		log.Printf("Listening on port: %v TLS: %v\n", ff.config.Port, ff.config.SSL)
+		s.ListenAndServeTLS(ff.config.Cert, ff.config.Key)
+	} else {
+		log.Printf("Listening on port: %v TLS: %v\n", ff.config.Port, ff.config.SSL)
+		s.ListenAndServe()
+	}
+
+}
+
+func (ff *ForwardFrontend) getCACert() *tls.Config {
+	mTLSConfig := &tls.Config{
+		CipherSuites: []uint16{
+			tls.TLS_RSA_WITH_RC4_128_SHA,
+			tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_RC4_128_SHA,
+			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+		},
+	}
+
+	mTLSConfig.PreferServerCipherSuites = true
+	mTLSConfig.MinVersion = tls.VersionTLS10
+	mTLSConfig.MaxVersion = tls.VersionTLS10
+
+	certs := x509.NewCertPool()
+
+	pemData, err := ioutil.ReadFile(ff.config.CA)
+	if err != nil {
+		// do error
+	}
+	certs.AppendCertsFromPEM(pemData)
+	mTLSConfig.RootCAs = certs
+
+	return mTLSConfig
 }
