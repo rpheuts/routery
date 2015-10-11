@@ -4,7 +4,7 @@ ___
 [![Circle CI](https://img.shields.io/circleci/project/rpheuts/routery.svg)](https://circleci.com/gh/rpheuts/routery)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rpheuts/routery/blob/master/LICENSE.md)
 
-Routery is aimed to be a convention-over-configuration dynamic reverse proxy for Docker. It can monitor multiple Docker hosts and create dynamic proxy routes for containers based on the container name. The incentive to write this tool came from the frustration of not being able to find a siple tool that would allow danymic proxying for containers for multiple Docker hosts.
+Routery is aimed to be a convention-over-configuration dynamic reverse proxy for Docker. It can monitor multiple Docker hosts and create dynamic proxy routes for containers based on the container name. The incentive to write this tool came from the frustration of not being able to find a simple tool that would allow dynamic proxying for containers for multiple Docker hosts.
 
 ## Features
 
