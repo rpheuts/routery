@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Load config file and set logging preferences
-	cfg := config.GetConfig("config.yaml")
+	cfg := config.GetConfig("routery.yaml")
 	logger.SetLogging(cfg.Logging.File, cfg.Logging.Path)
 	log.Println("Config loaded...")
 
