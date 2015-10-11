@@ -1,19 +1,19 @@
 package frontends
 
 import (
-	"log"
-	"net/http"
 	"fmt"
-	"strings"
 	"github.com/mailgun/oxy/forward"
 	"github.com/mailgun/oxy/testutils"
 	"github.com/rpheuts/routery/router"
+	"log"
+	"net/http"
+	"strings"
 )
 
 type ForwardFrontend struct {
-	config *FrontendConfig
+	config              *FrontendConfig
 	routeRequestChannel chan *router.RouteRequest
-	routes []*router.RouteRequest
+	routes              []*router.RouteRequest
 }
 
 func (ff *ForwardFrontend) Initialize(config *FrontendConfig) error {
@@ -23,7 +23,7 @@ func (ff *ForwardFrontend) Initialize(config *FrontendConfig) error {
 }
 
 func (ff *ForwardFrontend) Route(routeRequestChannel chan *router.RouteRequest) error {
-	if (!ff.config.Enabled) {
+	if !ff.config.Enabled {
 		return nil
 	}
 
@@ -40,14 +40,14 @@ func (ff *ForwardFrontend) Route(routeRequestChannel chan *router.RouteRequest) 
 
 func (ff *ForwardFrontend) watchRouteRequests() {
 	for {
-		event := <- ff.routeRequestChannel
+		event := <-ff.routeRequestChannel
 
-		if (!event.Remove) {
+		if !event.Remove {
 			ff.routes = append(ff.routes, event)
 			log.Printf("%v:%v: Received route-add request. %v\n", ff.config.Hostname, ff.config.Port, event)
 		} else {
 			ff.remove(event)
-			log.Printf("%v:%v: Received route-remove request. %v\n", ff.config.Hostname, ff.config.Port,  event)
+			log.Printf("%v:%v: Received route-remove request. %v\n", ff.config.Hostname, ff.config.Port, event)
 		}
 
 	}
@@ -74,14 +74,14 @@ func (ff *ForwardFrontend) watchWebRequests() {
 			if event.Hostname == hostname {
 				req.URL = testutils.ParseURI(fmt.Sprintf("http://%v:%v", event.Endpoint, event.Port))
 				fwd.ServeHTTP(w, req)
-				log.Printf("%v:%v:Serving request. Hostname: %v Target: %v Port: %v\n", ff.config.Hostname, ff.config.Port,  hostname, event.Endpoint, event.Port)
+				log.Printf("%v:%v:Serving request. Hostname: %v Target: %v Port: %v\n", ff.config.Hostname, ff.config.Port, hostname, event.Endpoint, event.Port)
 			}
 		}
 	})
 
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%v", ff.config.Port),
-		Handler:        redirect,
+		Addr:    fmt.Sprintf(":%v", ff.config.Port),
+		Handler: redirect,
 	}
 	s.ListenAndServe()
 }

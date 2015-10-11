@@ -2,25 +2,25 @@ package config
 
 type RouteryConfig struct {
 	Logging struct {
-				File bool
-				Path string
-				Verbose bool
-			}
+		File    bool
+		Path    string
+		Verbose bool
+	}
 
 	Frontend []FrontendConfig
-	Docker []DockerConfig
+	Docker   []DockerConfig
 }
 
 type DockerConfig struct {
-	IP string
+	IP   string
 	Port int
-	SSL bool
-	CA string
+	SSL  bool
+	CA   string
 	Cert string
-	Key string
+	Key  string
 }
 
 type FrontendConfig struct {
 	Hostname string
-	Port int
+	Port     int
 }

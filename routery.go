@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/rpheuts/routery/config"
+	"github.com/rpheuts/routery/frontends"
 	"github.com/rpheuts/routery/logger"
 	"github.com/rpheuts/routery/providers"
 	"github.com/rpheuts/routery/router"
-	"github.com/rpheuts/routery/frontends"
 	"log"
 )
 
@@ -21,7 +21,7 @@ func main() {
 	// DEV: Idle until termination
 	terminate := make(chan bool)
 	defer close(terminate)
-	<- terminate
+	<-terminate
 }
 
 func initializeProviders(cfg *config.RouteryConfig) {
@@ -55,7 +55,7 @@ func initializeProviders(cfg *config.RouteryConfig) {
 
 func routeRequestDispatcher(listenerChannels []chan *router.RouteRequest, routeRequestChan chan *router.RouteRequest) {
 	for {
-		event := <- routeRequestChan
+		event := <-routeRequestChan
 
 		// Broadcast on all channels
 		for _, channel := range listenerChannels {

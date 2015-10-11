@@ -3,9 +3,9 @@ package frontends
 import "github.com/rpheuts/routery/router"
 
 type FrontendConfig struct {
-	Enabled bool
+	Enabled  bool
 	Hostname string
-	Port int
+	Port     int
 }
 
 type Frontend interface {

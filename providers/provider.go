@@ -7,7 +7,7 @@ import (
 
 type ProviderConfig struct {
 	Enabled bool
-	Docker *config.DockerConfig
+	Docker  *config.DockerConfig
 }
 
 type Provider interface {

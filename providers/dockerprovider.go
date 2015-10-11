@@ -1,16 +1,16 @@
 package providers
 
 import (
+	"fmt"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/rpheuts/routery/router"
 	"log"
-	"fmt"
 	"strings"
 )
 
 type DockerProvider struct {
-	config *ProviderConfig
-	client *docker.Client
+	config              *ProviderConfig
+	client              *docker.Client
 	routeRequestChannel chan *router.RouteRequest
 }
 
@@ -24,12 +24,12 @@ func (provider *DockerProvider) Initialize(config *ProviderConfig) error {
 		provider.client, err = docker.NewTLSClient(endpoint,
 			provider.config.Docker.Cert,
 			provider.config.Docker.Key,
-			provider.config.Docker.CA);
+			provider.config.Docker.CA)
 	} else {
 		provider.client, err = docker.NewClient(endpoint)
 	}
 
-	if  err != nil {
+	if err != nil {
 		log.Printf("Failed to create a client for docker, error: %s\n", err)
 		return err
 	}
@@ -79,7 +79,7 @@ func (provider *DockerProvider) generateRouteRequests(event *docker.APIEvents) {
 	// If it's being removed we don't care about the details
 	if event.Status == "die" {
 		provider.routeRequestChannel <- &router.RouteRequest{event.ID, "", "", "", true}
-		return;
+		return
 	}
 
 	// Get the container by ID and generate specific route-request
@@ -90,7 +90,7 @@ func (provider *DockerProvider) generateRouteRequests(event *docker.APIEvents) {
 			name := strings.Split(container.Name, "/")[1]
 
 			// If there is a port 80 we just use the container name, otherwise append the port number to the name
-			if (port != "80") {
+			if port != "80" {
 				name = fmt.Sprintf("%v-%v", name, port)
 			}
 
@@ -102,7 +102,7 @@ func (provider *DockerProvider) generateRouteRequests(event *docker.APIEvents) {
 		log.Printf("Error getting container details: %v\n", err)
 	}
 
-	return;
+	return
 }
 
 func (provider *DockerProvider) generateExistingRouteRequests() {
