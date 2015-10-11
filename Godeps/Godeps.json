@@ -1,0 +1,26 @@
+{
+	"ImportPath": "github.com/rpheuts/routery",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/fsouza/go-dockerclient",
+			"Rev": "2bd40eb3ca54e74e8181ecbbc9b91902cb03d1df"
+		},
+		{
+			"ImportPath": "github.com/mailgun/oxy/forward",
+			"Rev": "547c334d658398c05b346c0b79d8f47ba2e1473b"
+		},
+		{
+			"ImportPath": "github.com/mailgun/oxy/testutils",
+			"Rev": "547c334d658398c05b346c0b79d8f47ba2e1473b"
+		},
+		{
+			"ImportPath": "github.com/mailgun/oxy/utils",
+			"Rev": "547c334d658398c05b346c0b79d8f47ba2e1473b"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "53feefa2559fb8dfa8d81baad31be332c97d6c77"
+		}
+	]
+}
