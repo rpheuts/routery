@@ -40,7 +40,15 @@ func initializeProviders(cfg *config.RouteryConfig) {
 	var listenerChannels = []chan *router.RouteRequest{}
 	for _, frontendConfig := range cfg.Frontend {
 		p := frontends.ForwardFrontend{}
-		p.Initialize(&frontends.FrontendConfig{true, frontendConfig.Hostname, frontendConfig.Port})
+		log.Printf("--- %v", frontendConfig)
+		p.Initialize(&frontends.FrontendConfig{true,
+			frontendConfig.Hostname,
+			frontendConfig.Port,
+			frontendConfig.SSL,
+			frontendConfig.Cert,
+			frontendConfig.Key,
+			frontendConfig.CA,
+		})
 
 		routeRequestListenerChan := make(chan *router.RouteRequest)
 		p.Route(routeRequestListenerChan)
