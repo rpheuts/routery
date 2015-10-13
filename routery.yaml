@@ -23,3 +23,10 @@ docker:
     ca: /Users/rpheuts/.docker/machine/machines/default/ca.pem
     cert: /Users/rpheuts/.docker/machine/machines/default/cert.pem
     key: /Users/rpheuts/.docker/machine/machines/default/key.pem
+
+auth:
+  -
+    type: LDAP
+    hostname: ldap.popagency.com
+    port: 389
+    arguments: dc=popagency,dc=com
