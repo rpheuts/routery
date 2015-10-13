@@ -9,6 +9,7 @@ type RouteryConfig struct {
 
 	Frontend []FrontendConfig
 	Docker   []DockerConfig
+	Auth []AuthConfig
 }
 
 type DockerConfig struct {
@@ -27,4 +28,11 @@ type FrontendConfig struct {
 	Cert     string
 	Key      string
 	CA       string
+}
+
+type AuthConfig struct {
+	Type string
+	Hostname string
+	Port int
+	Arguments string
 }

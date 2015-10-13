@@ -47,7 +47,7 @@ func initializeProviders(cfg *config.RouteryConfig) {
 			frontendConfig.Cert,
 			frontendConfig.Key,
 			frontendConfig.CA,
-		})
+		}, cfg)
 
 		routeRequestListenerChan := make(chan *router.RouteRequest)
 		p.Route(routeRequestListenerChan)

@@ -11,16 +11,20 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"github.com/rpheuts/routery/authentication"
+	"github.com/rpheuts/routery/config"
 )
 
 type ForwardFrontend struct {
 	config              *FrontendConfig
+	routeryConfig       *config.RouteryConfig
 	routeRequestChannel chan *router.RouteRequest
 	routes              []*router.RouteRequest
 }
 
-func (ff *ForwardFrontend) Initialize(config *FrontendConfig) error {
+func (ff *ForwardFrontend) Initialize(config *FrontendConfig, routeryConfig *config.RouteryConfig) error {
 	ff.config = config
+	ff.routeryConfig = routeryConfig
 
 	return nil
 }
@@ -75,6 +79,10 @@ func (ff *ForwardFrontend) watchWebRequests() {
 
 		for _, event := range ff.routes {
 			if event.Hostname == hostname {
+
+				// Do Authentication
+				authentication.Authenticate(ff.routeryConfig, "username", "password")
+
 				req.URL = testutils.ParseURI(fmt.Sprintf("http://%v:%v", event.Endpoint, event.Port))
 				fwd.ServeHTTP(w, req)
 				log.Printf("%v:%v:Serving request. Hostname: %v Target: %v Port: %v\n", ff.config.Hostname, ff.config.Port, hostname, event.Endpoint, event.Port)
