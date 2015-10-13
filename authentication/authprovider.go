@@ -15,14 +15,16 @@ type Provider interface {
 
 func Authenticate(routeryConfig *config.RouteryConfig, username string, password string) bool {
 
+	retval := false
+
 	// Iterate over Auth providers
 	for _, authConfig := range routeryConfig.Auth {
 		if authConfig.Type == "LDAP" {
 			ldap  := LDAPAuthProvider{}
 			ldap.Initialize(&AuthConfig{true, authConfig.Hostname, authConfig.Port, authConfig.Arguments})
-			return ldap.Authenticate(username, password)
+			retval = ldap.Authenticate(username, password)
 		}
 	}
 
-	return false
+	return retval
 }
