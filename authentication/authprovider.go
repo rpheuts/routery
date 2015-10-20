@@ -1,11 +1,16 @@
 package authentication
-import "github.com/rpheuts/routery/config"
+import (
+	"github.com/rpheuts/routery/config"
+	"log"
+)
 
 type AuthConfig struct {
 	Enabled bool
 	Hostname string
 	Port int
 	Arguments string
+	Username string
+	Password string
 }
 
 type Provider interface {
@@ -21,7 +26,9 @@ func Authenticate(routeryConfig *config.RouteryConfig, username string, password
 	for _, authConfig := range routeryConfig.Auth {
 		if authConfig.Type == "LDAP" {
 			ldap  := LDAPAuthProvider{}
-			ldap.Initialize(&AuthConfig{true, authConfig.Hostname, authConfig.Port, authConfig.Arguments})
+			ldap.Initialize(&AuthConfig{true, authConfig.Hostname, authConfig.Port, authConfig.Arguments, authConfig.Username, authConfig.Password})
+
+			log.Println("Trying to provide auth using: LDAP")
 			retval = ldap.Authenticate(username, password)
 		}
 	}

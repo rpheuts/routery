@@ -17,7 +17,7 @@ frontend:
 
 docker:
   -
-    ip: 192.168.99.101
+    ip: 192.168.99.100
     port: 2376
     ssl: true
     ca: /Users/rpheuts/.docker/machine/machines/default/ca.pem
@@ -27,6 +27,8 @@ docker:
 auth:
   -
     type: LDAP
-    hostname: ldap.popagency.com
-    port: 389
-    arguments: dc=popagency,dc=com
+    hostname: pop-dc1.popmultimedia.com
+    port: 3268
+    arguments: DC=popmultimedia,DC=com
+    username: jenkins
+    password: p0p123$%^

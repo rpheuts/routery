@@ -13,6 +13,7 @@ import (
 	"strings"
 	"github.com/rpheuts/routery/authentication"
 	"github.com/rpheuts/routery/config"
+	"encoding/base64"
 )
 
 type ForwardFrontend struct {
@@ -74,15 +75,12 @@ func (ff *ForwardFrontend) remove(r *router.RouteRequest) bool {
 
 func (ff *ForwardFrontend) watchWebRequests() {
 	fwd, _ := forward.New()
-	redirect := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+
+	proxy := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		hostname := strings.Split(req.Host, ".")[0]
 
 		for _, event := range ff.routes {
 			if event.Hostname == hostname {
-
-				// Do Authentication
-				authentication.Authenticate(ff.routeryConfig, "username", "password")
-
 				req.URL = testutils.ParseURI(fmt.Sprintf("http://%v:%v", event.Endpoint, event.Port))
 				fwd.ServeHTTP(w, req)
 				log.Printf("%v:%v:Serving request. Hostname: %v Target: %v Port: %v\n", ff.config.Hostname, ff.config.Port, hostname, event.Endpoint, event.Port)
@@ -92,7 +90,7 @@ func (ff *ForwardFrontend) watchWebRequests() {
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%v", ff.config.Port),
-		Handler: redirect,
+		Handler: ff.basicAuth(proxy),
 	}
 
 	if ff.config.SSL {
@@ -135,4 +133,34 @@ func (ff *ForwardFrontend) getCACert() *tls.Config {
 	mTLSConfig.RootCAs = certs
 
 	return mTLSConfig
+}
+
+func (ff *ForwardFrontend) basicAuth(pass http.HandlerFunc) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Header["Authorization"] == nil || len(r.Header["Authorization"]) <= 0 {
+			w.Header().Add("WWW-Authenticate", "Basic")
+			http.Error(w, "", 401)
+			return
+		}
+
+
+		auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
+
+		if len(auth) != 2 || auth[0] != "Basic" {
+			http.Error(w, "bad syntax", http.StatusBadRequest)
+			return
+		}
+
+		payload, _ := base64.StdEncoding.DecodeString(auth[1])
+		pair := strings.SplitN(string(payload), ":", 2)
+
+		log.Printf("Auth received for user: %v\n", pair[0])
+		if len(pair) != 2 || !authentication.Authenticate(ff.routeryConfig, pair[0], pair[1]) {
+			http.Error(w, "authorization failed", http.StatusUnauthorized)
+			return
+		}
+
+		pass(w, r)
+	}
 }
