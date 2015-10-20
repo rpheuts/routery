@@ -8,6 +8,7 @@ type AuthConfig struct {
 	Enabled bool
 	Hostname string
 	Port int
+	Domain string
 	Arguments string
 	Username string
 	Password string
@@ -26,7 +27,7 @@ func Authenticate(routeryConfig *config.RouteryConfig, username string, password
 	for _, authConfig := range routeryConfig.Auth {
 		if authConfig.Type == "LDAP" {
 			ldap  := LDAPAuthProvider{}
-			ldap.Initialize(&AuthConfig{true, authConfig.Hostname, authConfig.Port, authConfig.Arguments, authConfig.Username, authConfig.Password})
+			ldap.Initialize(&AuthConfig{true, authConfig.Hostname, authConfig.Port, authConfig.Domain, authConfig.Arguments, authConfig.Username, authConfig.Password})
 
 			log.Println("Trying to provide auth using: LDAP")
 			retval = ldap.Authenticate(username, password)

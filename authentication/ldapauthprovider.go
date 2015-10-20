@@ -40,9 +40,9 @@ func (ap *LDAPAuthProvider) LDAPAuthenticate(username string, password string) b
 
 	// Search for the given username
 	searchRequest := ldap.NewSearchRequest(
-		ap.config.Arguments,
+		ap.config.Domain,
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		fmt.Sprintf("(&(objectClass=person)(mailNickname=%s))", username),
+		fmt.Sprintf(ap.config.Arguments, username),
 		[]string{"dn"},
 		nil,
 	)
