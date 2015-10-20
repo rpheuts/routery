@@ -110,18 +110,19 @@ func (ff *ForwardFrontend) watchWebRequests() {
 func (ff *ForwardFrontend) getCACert() *tls.Config {
 	mTLSConfig := &tls.Config{
 		CipherSuites: []uint16{
-			tls.TLS_RSA_WITH_RC4_128_SHA,
-			tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
-			tls.TLS_ECDHE_RSA_WITH_RC4_128_SHA,
-			tls.TLS_RSA_WITH_AES_128_CBC_SHA,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 		},
 	}
 
 	mTLSConfig.PreferServerCipherSuites = true
 	mTLSConfig.MinVersion = tls.VersionTLS10
-	mTLSConfig.MaxVersion = tls.VersionTLS10
+	mTLSConfig.MaxVersion = tls.VersionTLS12
 
 	certs := x509.NewCertPool()
 
@@ -143,7 +144,6 @@ func (ff *ForwardFrontend) basicAuth(pass http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "", 401)
 			return
 		}
-
 
 		auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
 
