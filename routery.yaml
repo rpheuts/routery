@@ -29,6 +29,7 @@ auth:
     type: LDAP
     hostname: pop-dc1.popmultimedia.com
     port: 3268
-    arguments: DC=popmultimedia,DC=com
+    arguments: (&(objectClass=person)(mailNickname=%s))
+    domain: DC=popmultimedia,DC=com
     username: jenkins
     password: p0p123$%^

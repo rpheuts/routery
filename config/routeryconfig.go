@@ -34,6 +34,7 @@ type AuthConfig struct {
 	Type string
 	Hostname string
 	Port int
+	Domain string
 	Arguments string  `json:"arguments,omitempty"`
 	Username string `json:"username,omitempty"`
 	Password string `json:"password,omitempty"`
