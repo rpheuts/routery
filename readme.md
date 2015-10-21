@@ -12,6 +12,7 @@ Routery is aimed to be a convention-over-configuration dynamic reverse proxy for
  - Allows for multiple frontends and hostnames
  - Supports multiple ports by appending the port name (if not 80) to the host
  - SSL Termination support
+ - Basic LDAP Auth support
 
 ## How-To
 
