@@ -17,9 +17,19 @@ frontend:
 
 docker:
   -
-    ip: 192.168.99.101
+    ip: 192.168.99.100
     port: 2376
     ssl: true
     ca: /Users/rpheuts/.docker/machine/machines/default/ca.pem
     cert: /Users/rpheuts/.docker/machine/machines/default/cert.pem
     key: /Users/rpheuts/.docker/machine/machines/default/key.pem
+
+auth:
+  -
+    type: LDAP
+    hostname: dc.example.com
+    port: 3268
+    arguments: (&(objectClass=person)(mailNickname=%s))
+    domain: DC=example,DC=com
+    username: routerty_robind
+    password: routery
