@@ -137,28 +137,31 @@ func (ff *ForwardFrontend) getCACert() *tls.Config {
 func (ff *ForwardFrontend) basicAuth(pass http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Header["Authorization"] == nil || len(r.Header["Authorization"]) <= 0 {
-			w.Header().Add("WWW-Authenticate", "Basic")
-			http.Error(w, "", 401)
-			return
+
+		if ff.routeryConfig.Auth != nil {
+			if r.Header["Authorization"] == nil || len(r.Header["Authorization"]) <= 0 {
+				w.Header().Add("WWW-Authenticate", "Basic")
+				http.Error(w, "", 401)
+				return
+			}
+
+			auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
+
+			if len(auth) != 2 || auth[0] != "Basic" {
+				http.Error(w, "bad syntax", http.StatusBadRequest)
+				return
+			}
+
+			payload, _ := base64.StdEncoding.DecodeString(auth[1])
+			pair := strings.SplitN(string(payload), ":", 2)
+
+			log.Printf("Auth received for user: %v\n", pair[0])
+			if len(pair) != 2 || !authentication.Authenticate(ff.routeryConfig, pair[0], pair[1]) {
+				http.Error(w, "authorization failed", http.StatusUnauthorized)
+				return
+			}
 		}
-
-		auth := strings.SplitN(r.Header["Authorization"][0], " ", 2)
-
-		if len(auth) != 2 || auth[0] != "Basic" {
-			http.Error(w, "bad syntax", http.StatusBadRequest)
-			return
-		}
-
-		payload, _ := base64.StdEncoding.DecodeString(auth[1])
-		pair := strings.SplitN(string(payload), ":", 2)
-
-		log.Printf("Auth received for user: %v\n", pair[0])
-		if len(pair) != 2 || !authentication.Authenticate(ff.routeryConfig, pair[0], pair[1]) {
-			http.Error(w, "authorization failed", http.StatusUnauthorized)
-			return
-		}
-
+		
 		pass(w, r)
 	}
 }
